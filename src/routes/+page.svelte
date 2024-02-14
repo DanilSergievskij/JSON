@@ -15,4 +15,20 @@
 
 {#each data.products.images as imageSrc}
      <div><img src={imageSrc} alt=productImage/></div>
-	 {/each}
+	 {/each} 
+	
+	 <h1 class="text-3xl font-bold underline">
+		Hello world!
+	  </h1>
+
+	  <button class="btn">Button</button>
+
+	  <div class="carousel carousel-center max-w-md p-4 space-x-4 bg-neutral rounded-box">
+		{#each data.products.images as imageSrc}
+		<div class="carousel-item">
+			<img src="{imageSrc}" class="rounded-box" />
+		  </div> 
+	 {/each} 
+		
+	  </div>
+
