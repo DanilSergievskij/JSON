@@ -3,6 +3,7 @@
 import { enhance } from '$app/forms';
 	export let data;
  let searchData=''
+ let opendialog = false;
 
  const searchFunc = () => {
 	console.log ('searchFiled', searchData)
@@ -12,8 +13,31 @@ import { enhance } from '$app/forms';
 				data.products = resData.products
 			});
  }
-	
+ let productDataFormDialog={}
+ const getProductData = (product) => {
+		console.log('product_25', product);
+		productDataFormDialog = product;
+		opendialog = true;
+	}
 </script>
+
+<dialog class="modal" class:modal-open={opendialog}>
+  <div class="modal-box">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" on:click={() => (opendialog=false)}>✕</button>
+    </form>
+    <h3 class="font-bold text-lg">Hello!</h3>
+    <div class="card card-compact  bg-base-100 shadow-xl"></div>
+		<figure><img src={productDataFormDialog.thumbnail} alt="Shoes" /></figure>
+		<div class="card-body">
+		  <h2 class="card-title">Shoes!</h2>
+		  <p>If a dog chews shoes whose shoes does he choose?</p>
+		  <div class="card-actions justify-end">
+			<button class="btn btn-primary">Buy Now</button>
+		  </div>
+		</div>
+	  </div>
+</dialog>
 
 <h1>List from dunny</h1>
 
@@ -102,7 +126,7 @@ import { enhance } from '$app/forms';
 					<input type="radio" name="rating-4" class="mask mask-star-2 bg-green-500" />
 				  </div></td>
 				<th>
-				  <button class="btn btn-ghost btn-xs">details</button>
+				  <button class="btn btn-ghost btn-xs" on:click={getProductData(product)}>details</button>
 				</th>
 			  </tr>
 	 {/each} 
