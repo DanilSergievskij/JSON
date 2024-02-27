@@ -4,7 +4,12 @@ import { enhance } from '$app/forms';
 	export let data;
  let searchData=''
  let opendialog = false;
-
+ let countProductCard = 0;
+ let productsInCard = [];
+ const addProductToCard = (productData)=> {
+	productsInCard.push(productData)
+	console.log(productsInCard)
+}
  const searchFunc = () => {
 	console.log ('searchFiled', searchData)
 	fetch(`https://dummyjson.com/products/search?q=${searchData}`)
@@ -26,14 +31,18 @@ import { enhance } from '$app/forms';
     <form method="dialog">
       <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" on:click={() => (opendialog=false)}>✕</button>
     </form>
-    <h3 class="font-bold text-lg">Hello!</h3>
+   
     <div class="card card-compact  bg-base-100 shadow-xl"></div>
 		<figure><img src={productDataFormDialog.thumbnail} alt="Shoes" /></figure>
 		<div class="card-body">
-		  <h2 class="card-title">Shoes!</h2>
-		  <p>If a dog chews shoes whose shoes does he choose?</p>
+		  <h2 class="card-title">{productDataFormDialog.title} </h2>
+		  <p>{productDataFormDialog.description} </p>
+		  <p> Remains:{productDataFormDialog.stock} </p>
 		  <div class="card-actions justify-end">
-			<button class="btn btn-primary">Buy Now</button>
+			<div>{productDataFormDialog.price -
+				(productDataFormDialog.price / 100) * productDataFormDialog.discountPercentage} $ </div>
+			<button class="btn btn-primary" 
+			on:click={addProductToCard(productDataFormDialog)}>Buy Now</button>
 		  </div>
 		</div>
 	  </div>
@@ -43,12 +52,21 @@ import { enhance } from '$app/forms';
 
 <p>Description list <a href = https://dummyjson.com/docs/products>https://dummyjson.com/docs/products</a></p>
 
+
+<div class="flex justify-between p-10">
+
 <div class="join">
+	
 	<input class="input input-bordered join-item" 
 	bind:value={searchData}
 	placeholder="Search"/>
 	<button class="btn join-item rounded-r-full" on:click={searchFunc}>Search</button>
 	
+  </div>
+  <div class="indicator">
+	<span class="indicator-item badge badge-secondary">{countProductCard}</span> 
+	<button class="btn">Card</button>
+  </div>
   </div>
 
 
