@@ -8,6 +8,17 @@ import { enhance } from '$app/forms';
  let countProductCard = 0;
  let productsInCard = [];
  let productSumm = 0;
+
+ 
+	const countSum = () => {
+		productSumm = 0;
+		let sum = 0;
+		productsInCard.forEach((product) => {
+			sum += product.sum;
+		});
+		productSumm = sum;
+	};
+
  const addProductToCard = (productData)=> {
  const productsIn =  productsInCard.find((product)=>product.id === productData.id);
  console.log ('productsIn', productsIn);
@@ -16,11 +27,9 @@ import { enhance } from '$app/forms';
 	console.log(productsInCard)
 	countProductCard=countProductCard+1;
 	productsInCard=productsInCard;
-	productSumm = productSumm + productData.price -
-				(productData.price / 100) * productData.discountPercentage;
  }
-	
 };
+
  const searchFunc = () => {
 	console.log ('searchFiled', searchData)
 	fetch(`https://dummyjson.com/products/search?q=${searchData}`)
@@ -65,7 +74,7 @@ import { enhance } from '$app/forms';
 
 
 <div class="flex justify-between p-10">
-
+<!-- Пошук -->
 <div class="join">
 	
 	<input class="input input-bordered join-item" 
@@ -74,9 +83,15 @@ import { enhance } from '$app/forms';
 	<button class="btn join-item rounded-r-full" on:click={searchFunc}>Search</button>
 	
   </div>
+  <!-- Корзина -->
   <div class="indicator">
 	<span class="indicator-item badge badge-secondary">{countProductCard}</span> 
-	<button class="btn" on:click={() => (isopenCardSideBar=!isopenCardSideBar)}>
+	<button class="btn" on:click={() =>{ isopenCardSideBar = !isopenCardSideBar;
+		if (isopenCardSideBar) {
+			countSum();
+		}
+		}
+	}>
 		<svg class="h-6 v-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 		<path d="M6.29977 5H21L19 12H7.37671M20 16H8L6 3H3M9 20C9 20.5523 8.55228 21 8 21C7.44772 21 7 20.5523 7 20C7 19.4477 7.44772 19 8 19C8.55228 19 9 19.4477 9 20ZM20 20C20 20.5523 19.5523 21 19 21C18.4477 21 18 20.5523 18 20C18 19.4477 18.4477 19 19 19C19.5523 19 20 19.4477 20 20Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 		</svg></button>
