@@ -9,8 +9,8 @@
       </div>
       <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
         <li><a href="/Contacts">Контакти</a></li>
-        <li><a>Portfolio</a></li>
-        <li><a>About</a></li>
+        <li><a href="/auth/login">Login</a></li>
+        <li><a href="/auth/register">Register</a></li>
       </ul>
     </div>
   </div>
