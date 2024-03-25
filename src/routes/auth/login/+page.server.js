@@ -25,12 +25,10 @@ export const actions = {
    login: async (event) => {
     const formData = Object.fromEntries(await event.request.formData());
     console.log('formData', formData);
+    const errorsObj = {};
+    const findedUser = users.find((user) => user.email === formData.email);
     if (validateEmail(formData.email)) {
-        const findedUser = users.find((user) => user.email === formData.email
-        );
-        console.log('findedUser', findedUser)
-        if(findedUser!== undefined && formData.password === findedUser?.password){
-            logedUser = findedUser;
+       errorsObj.email = 'Email is not valid '
         }
     }
 
@@ -43,13 +41,17 @@ export const actions = {
 
    }
     console.log('formData', formData);
+    const errorsObj = {};
     if (!validateEmail(formData.email)) {
-        return fail(400, { email: formData.email, message: 'Email is not valid!' });
+        errorsObj.email = 'Email is not valid!';
     }
 
     if (!formData.password || formData.password.length < 6) {
-        return fail(400, { password: formData.password, message: 'Password is more 6 character!' });
+        errorsObj.password = 'Password is more 6 character!';
     }
+
+    if (Object.values(errorsObj).length)
+       return fail (400, errorsObj)
     if (validateEmail(formData.email)) {
         const findedUser = users.find((user) => user.email === formData.email);
         console.log('findedUser', findedUser);
