@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import { fail } from '@sveltejs/kit';
 const users = [
     {
@@ -27,42 +28,54 @@ export const actions = {
     console.log('formData', formData);
     const errorsObj = {};
     const findedUser = users.find((user) => user.email === formData.email);
-    if (validateEmail(formData.email)) {
-       errorsObj.email = 'Email is not valid '
-        }
-    }
+    if (!validateEmail(formData.email)) {
+       errorsObj.email = 'Email is not valid ';
 
+    }
+    const isPasswordCompare = bcrypt.compareSync (formData.password, findedUser?.password);
+    if (findedUser !== undefined && formData.password === findedUser?.password) {
+        console.log('LogUser');
+        logedUser = findedUser;
+    } else {
+        errorsObj.password = 'Password is not correct';
+    }
+    if (Object.values(errorsObj).length) {
+        return fail(400, errorsObj);
+    }
+      return logedUser;
    },
    register: async (event) => {
     const formData = Object.fromEntries(await event.request.formData());
     const findedUser = users.find((user) => user.email === formData.email);
-    if (findedUser !== undefined){
-        return fail(400, {message: 'User is not register'});
-
-   }
-    console.log('formData', formData);
+    if (findedUser !== undefined) {
+      return fail(400, { message: 'User is now register!' });
+    }
     const errorsObj = {};
     if (!validateEmail(formData.email)) {
-        errorsObj.email = 'Email is not valid!';
+      errorsObj.email = 'Email is not valid!';
     }
 
     if (!formData.password || formData.password.length < 6) {
-        errorsObj.password = 'Password is more 6 character!';
+      errorsObj.password = 'Password is more 6 character!';
     }
 
-    if (Object.values(errorsObj).length)
-       return fail (400, errorsObj)
-    if (validateEmail(formData.email)) {
-        const findedUser = users.find((user) => user.email === formData.email);
-        console.log('findedUser', findedUser);
-        if (findedUser === undefined && formData.password) {
-            const newUser = {
-                email: formData.email,
-                password: formData.password
-            };
-            users.push(newUser);
-            logedUser = newUser;
-        }
+    if (Object.values(errorsObj).length) {
+      return fail(400, errorsObj);
     }
-}
-}
+
+    if (validateEmail(formData.email)) {
+      const salt = bcrypt.genSaltSync(saltRounds);
+      const hash = bcrypt.hashSync(myPlaintextPassword, salt);  
+      const findedUser = users.find((user) => user.email === formData.email);
+      console.log('findedUser', findedUser);
+      if (findedUser === undefined && formData.password) {
+        const newUser = {
+          email: formData.email,
+          password: hash
+        };
+        users.push(newUser);
+        logedUser = newUser;
+      }
+    }
+  }
+};
