@@ -7,7 +7,7 @@ const users = [
     },
     {
         email: 'channelmonitor@gmail.com',
-        password: '123456'
+        password: '654321'
     }
 ]
 let logedUser = {}
@@ -32,16 +32,26 @@ export const actions = {
        errorsObj.email = 'Email is not valid ';
 
     }
-    const isPasswordCompare = bcrypt.compareSync (formData.password, findedUser?.password);
-    if (findedUser !== undefined && formData.password === findedUser?.password) {
-        console.log('LogUser');
-        logedUser = findedUser;
-    } else {
-        errorsObj.password = 'Password is not correct';
+   
+    if (findedUser !== undefined ) {
+      errorsObj.password = 'User is not register';
+    }
+    if (!formData.password.length){
+      errorsObj.password = 'Password is not correct';
+    }
+    if (Object.values(errorsObj).length) {
+      return fail(400, errorsObj)
+    }
+    
+    const isPasswordCompare = bcrypt.compareSync(formData.password, findedUser?.password);
+    if (isPasswordCompare) {
+      logedUser = findedUser;
+      return logedUser;
     }
     if (Object.values(errorsObj).length) {
         return fail(400, errorsObj);
     }
+    
       return logedUser;
    },
    register: async (event) => {
