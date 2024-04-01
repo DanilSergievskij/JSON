@@ -1,20 +1,23 @@
+import { fail, redirect } from '@sveltejs/kit';
 import bcrypt from "bcrypt";
-import { fail } from '@sveltejs/kit';
 const users = [
     {
         email: 'sergievskij@gmail.com',
-        password: '123456'
+        password: '$2b$10$SJag1WLcFRQb.FR5TysBJeu0t7bnHiYmTaCBG5w3FtmzxtoX0.3Yq'
     },
     {
         email: 'channelmonitor@gmail.com',
-        password: '654321'
+        password: '$2b$10$SJag1WLcFRQb.FR5TysBJeu0t7bnHiYmTaCBG5w3FtmzxtoX0.3Yq'
     }
 ]
 let logedUser = {}
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load() {
-	return {users, user:logedUser};
+  if (Object.values(logedUser).length) {
+    redirect(302, '/');
+}
+return {users, user:logedUser};
 }
 
 function validateEmail(email) {
@@ -33,7 +36,7 @@ export const actions = {
 
     }
    
-    if (findedUser !== undefined ) {
+    if (findedUser === undefined ) {
       errorsObj.password = 'User is not register';
     }
     if (!formData.password.length){
@@ -46,13 +49,14 @@ export const actions = {
     const isPasswordCompare = bcrypt.compareSync(formData.password, findedUser?.password);
     if (isPasswordCompare) {
       logedUser = findedUser;
-      return logedUser;
+      
     }
     if (Object.values(errorsObj).length) {
         return fail(400, errorsObj);
     }
     
-      return logedUser;
+      redirect(302, '/');
+
    },
    register: async (event) => {
     const formData = Object.fromEntries(await event.request.formData());

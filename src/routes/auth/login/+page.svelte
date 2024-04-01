@@ -1,5 +1,6 @@
 <script>
-    import { enhance } from '$app/forms';
+   import { goto } from '$app/navigation';
+   import { enhance } from '$app/forms';
     let typePassword = "password";
     export let data;
     let tabActive = "login";
@@ -16,11 +17,8 @@
     class:tab-active={tabActive === 'login'}
     on:click={() =>(tabActive = 'login')}>Login</a> 
 
-    <a 
-    role="tab" 
-    class="tab"
-    class:tab-active={tabActive === 'register'}
-    on:click={() =>(tabActive = 'register')}>Register</a> 
+    
+     
     
   </div>
   {#if tabActive === 'login'}
@@ -35,9 +33,14 @@
 
   return async ({ result, update }) => {
     if(result.type === 'failure') {
-      console.log(result)
-      errorsLogin = result.data
+      console.log('result',result);
+      errorsLogin = result.data;
+    } else if (result.type === 'success') {
+      data.user = result.data;
+    } else if (result.type === 'redirect') {
+      goto (result.location); 
     }
+    
   
     // `result` is an `ActionResult` object
     // `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
