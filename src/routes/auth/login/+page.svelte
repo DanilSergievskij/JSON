@@ -17,6 +17,12 @@
     class:tab-active={tabActive === 'login'}
     on:click={() =>(tabActive = 'login')}>Login</a> 
 
+    <a 
+    role="tab" 
+    class="tab"
+    class:tab-active={tabActive === 'register'}
+    on:click={() =>(tabActive = 'register')}>Register</a> 
+
     
      
     
@@ -37,9 +43,9 @@
       errorsLogin = result.data;
     } else if (result.type === 'success') {
       data.user = result.data;
-    } else if (result.type === 'redirect') {
+   } else if (result.type === 'redirect') {
       goto (result.location); 
-    }
+    } 
     
   
     // `result` is an `ActionResult` object
@@ -87,7 +93,9 @@
       if(result.type === 'failure') {
         console.log(result)
         errorsRegister = result.data
-      }
+      } else if (result.type === 'redirect') {
+      goto (result.location); 
+    } 
     
       // `result` is an `ActionResult` object
       // `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
